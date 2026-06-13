@@ -396,6 +396,7 @@ header {
   font-weight: 700;
   cursor: pointer;
   margin: 4px;
+  min-width: 130px;
 }
 
 .btn.alt {
