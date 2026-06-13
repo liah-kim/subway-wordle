@@ -139,34 +139,6 @@ header {
   font-weight: 700;
 }
 
-/* ── Difficulty selector (practice mode) ── */
-.difficulty-row {
-  display: flex;
-  gap: 6px;
-  justify-content: center;
-  margin-top: 8px;
-}
-
-.diff-btn {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  text-transform: capitalize;
-  padding: 2px 12px;
-  border-radius: 10px;
-  border: 1px solid var(--line);
-  background: none;
-  color: var(--muted);
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
-}
-
-.diff-btn.active {
-  background: var(--text);
-  color: var(--bg);
-  border-color: var(--text);
-}
-
 /* ── Mystery panel ── */
 .mystery-flipper {
   perspective: 900px;
@@ -677,42 +649,41 @@ header {
 }
 
 /* ── Theme toggle ── */
-.theme-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-top: 1px solid var(--line);
-  margin-top: 16px;
-  padding-top: 14px;
+/* ── Settings tab ── */
+.setting-section {
+  margin-bottom: 20px;
 }
 
-.theme-label {
-  font-size: 13px;
+.setting-label {
+  font-size: 11px;
+  letter-spacing: 1px;
   color: var(--muted);
-  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 8px;
 }
 
-.theme-btns {
+.setting-btns {
   display: flex;
-  gap: 4px;
+  gap: 6px;
   background: var(--surface);
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 3px;
 }
 
-.theme-btn {
+.seg-btn {
+  flex: 1;
   background: none;
   border: none;
-  border-radius: 6px;
-  padding: 4px 10px;
-  font-size: 12px;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--muted);
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
 }
 
-.theme-btn.active {
+.seg-btn.active {
   background: var(--panel);
   color: var(--text);
 }

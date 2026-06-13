@@ -44,17 +44,18 @@ export default function App() {
       .then(data => setStations(data));
   }, []);
 
-  useEffect(() => {
-    if (stations.length === 0) return;
-    const { station: ans, num } = pickDaily(stations);
+  function startDaily(stationList = stations) {
+    if (stationList.length === 0) return;
+    const { station: ans, num } = pickDaily(stationList);
     setAnswer(ans);
     setDailyNum(num);
     setMode('daily');
+    setRevealed(false);
 
     const saved = loadGameState(num);
     if (saved?.guessIds?.length > 0) {
       const rehydrated = saved.guessIds
-        .map(id => stations.find(s => s.id === id))
+        .map(id => stationList.find(s => s.id === id))
         .filter(Boolean)
         .map(s => computeGuess(s, ans));
       setGuesses(rehydrated);
@@ -68,6 +69,11 @@ export default function App() {
       setWon(false);
     }
     setStats(loadStats());
+  }
+
+  useEffect(() => {
+    if (stations.length === 0) return;
+    startDaily(stations);
   }, [stations]);
 
   function startPractice(diff = difficulty) {
@@ -80,9 +86,14 @@ export default function App() {
     setRevealed(false);
   }
 
+  function handleModeChange(newMode) {
+    if (newMode === 'daily') startDaily();
+    else startPractice();
+  }
+
   function handleDifficultyChange(diff) {
     setDifficulty(diff);
-    startPractice(diff);
+    if (mode === 'practice') startPractice(diff);
   }
 
   function handleReveal() {
@@ -150,20 +161,7 @@ export default function App() {
           <button className="icon-btn" onClick={() => setInfoTab('howto')} aria-label="Menu">⚙️</button>
         </div>
         <div className="sub">Guess the NYC subway station from its stops</div>
-        <div className="modeTag">{mode === 'daily' ? `DAILY #${dailyNum}` : 'PRACTICE'}</div>
-        {mode === 'practice' && (
-          <div className="difficulty-row">
-            {['easy', 'medium', 'hard'].map(d => (
-              <button
-                key={d}
-                className={`diff-btn${difficulty === d ? ' active' : ''}`}
-                onClick={() => handleDifficultyChange(d)}
-              >
-                {d}
-              </button>
-            ))}
-          </div>
-        )}
+        <div className="modeTag">{mode === 'daily' ? `DAILY #${dailyNum}` : `PRACTICE · ${difficulty}`}</div>
       </header>
 
       <div className="mystery-flipper">
@@ -224,6 +222,10 @@ export default function App() {
           initialTab={infoTab}
           theme={theme}
           onThemeChange={handleThemeChange}
+          mode={mode}
+          difficulty={difficulty}
+          onModeChange={handleModeChange}
+          onDifficultyChange={handleDifficultyChange}
           onClose={() => setInfoTab(null)}
         />
       )}

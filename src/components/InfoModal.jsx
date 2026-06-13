@@ -104,7 +104,63 @@ function StatsContent({ stats, lastGuessCount }) {
   );
 }
 
-export default function InfoModal({ stats, lastGuessCount, initialTab = 'howto', theme, onThemeChange, onClose }) {
+function SettingsContent({ mode, difficulty, theme, onModeChange, onDifficultyChange, onThemeChange }) {
+  return (
+    <div className="info-content">
+      <div className="setting-section">
+        <div className="setting-label">MODE</div>
+        <div className="setting-btns">
+          {[['daily', 'Daily'], ['practice', 'Practice']].map(([val, label]) => (
+            <button
+              key={val}
+              className={`seg-btn${mode === val ? ' active' : ''}`}
+              onClick={() => onModeChange(val)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="setting-section">
+        <div className="setting-label">PRACTICE DIFFICULTY</div>
+        <div className="setting-btns">
+          {[['easy', 'Easy'], ['medium', 'Medium'], ['hard', 'Hard']].map(([val, label]) => (
+            <button
+              key={val}
+              className={`seg-btn${difficulty === val ? ' active' : ''}`}
+              onClick={() => onDifficultyChange(val)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="setting-section">
+        <div className="setting-label">THEME</div>
+        <div className="setting-btns">
+          {[['system', 'Auto'], ['light', '☀️ Light'], ['dark', '🌙 Dark']].map(([val, label]) => (
+            <button
+              key={val}
+              className={`seg-btn${theme === val ? ' active' : ''}`}
+              onClick={() => onThemeChange(val)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function InfoModal({
+  stats, lastGuessCount, initialTab = 'howto',
+  theme, onThemeChange,
+  mode, difficulty, onModeChange, onDifficultyChange,
+  onClose,
+}) {
   const [tab, setTab] = useState(initialTab);
 
   return (
@@ -113,39 +169,23 @@ export default function InfoModal({ stats, lastGuessCount, initialTab = 'howto',
         <button className="modal-close" onClick={onClose}>✕</button>
 
         <div className="modal-tabs">
-          <button
-            className={`tab-btn${tab === 'howto' ? ' active' : ''}`}
-            onClick={() => setTab('howto')}
-          >
-            How to Play
-          </button>
-          <button
-            className={`tab-btn${tab === 'stats' ? ' active' : ''}`}
-            onClick={() => setTab('stats')}
-          >
-            Statistics
-          </button>
+          <button className={`tab-btn${tab === 'howto' ? ' active' : ''}`} onClick={() => setTab('howto')}>How to Play</button>
+          <button className={`tab-btn${tab === 'stats' ? ' active' : ''}`} onClick={() => setTab('stats')}>Statistics</button>
+          <button className={`tab-btn${tab === 'settings' ? ' active' : ''}`} onClick={() => setTab('settings')}>Settings</button>
         </div>
 
-        {tab === 'howto'
-          ? <HowToPlayContent />
-          : <StatsContent stats={stats} lastGuessCount={lastGuessCount} />
-        }
-
-        <div className="theme-row">
-          <span className="theme-label">Theme</span>
-          <div className="theme-btns">
-            {[['system', 'Auto'], ['light', '☀️ Light'], ['dark', '🌙 Dark']].map(([val, label]) => (
-              <button
-                key={val}
-                className={`theme-btn${theme === val ? ' active' : ''}`}
-                onClick={() => onThemeChange(val)}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-        </div>
+        {tab === 'howto' && <HowToPlayContent />}
+        {tab === 'stats' && <StatsContent stats={stats} lastGuessCount={lastGuessCount} />}
+        {tab === 'settings' && (
+          <SettingsContent
+            mode={mode}
+            difficulty={difficulty}
+            theme={theme}
+            onModeChange={onModeChange}
+            onDifficultyChange={onDifficultyChange}
+            onThemeChange={onThemeChange}
+          />
+        )}
       </div>
     </div>
   );
