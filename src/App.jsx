@@ -22,6 +22,7 @@ export default function App() {
   const [stats, setStats] = useState(null);
   const [lastGuessCount, setLastGuessCount] = useState(null);
   const [theme, setTheme] = useState(() => loadTheme());
+  const [revealed, setRevealed] = useState(false);
 
   useEffect(() => {
     const t = loadTheme();
@@ -75,18 +76,25 @@ export default function App() {
     setWon(false);
     setMode('practice');
     setLastGuessCount(null);
+    setRevealed(false);
   }
 
   function handleReveal() {
-    if (over) return;
-    setOver(true);
-    setWon(false);
-    setLastGuessCount(guesses.length);
-    if (mode === 'daily') {
-      const newStats = updateAndSaveStats(false, guesses.length, dailyNum);
-      setStats(newStats);
-      saveGameState(dailyNum, guesses.map(g => g.station.id), 'lost');
-    }
+    if (over || revealed) return;
+    const capturedGuesses = guesses;
+    const capturedMode = mode;
+    const capturedDailyNum = dailyNum;
+    setRevealed(true);
+    setTimeout(() => {
+      setOver(true);
+      setWon(false);
+      setLastGuessCount(capturedGuesses.length);
+      if (capturedMode === 'daily') {
+        const newStats = updateAndSaveStats(false, capturedGuesses.length, capturedDailyNum);
+        setStats(newStats);
+        saveGameState(capturedDailyNum, capturedGuesses.map(g => g.station.id), 'lost');
+      }
+    }, 550);
   }
 
   function handleGuess(station) {
@@ -139,12 +147,24 @@ export default function App() {
         <div className="modeTag">{mode === 'daily' ? `DAILY #${dailyNum}` : 'PRACTICE'}</div>
       </header>
 
-      <div className="mystery">
-        <div className="label">MYSTERY STATION</div>
-        <div className="bullets">
-          {sortRoutes(answer.routes).map((r, i) => (
-            <RouteBullet key={r} route={r} style={{ animationDelay: `${i * 0.07}s` }} />
-          ))}
+      <div className="mystery-flipper">
+        <div className={`mystery-card${revealed ? ' flipped' : ''}`}>
+          <div className="mystery-front">
+            <div className="label">MYSTERY STATION</div>
+            <div className="bullets">
+              {sortRoutes(answer.routes).map((r, i) => (
+                <RouteBullet key={r} route={r} style={{ animationDelay: `${i * 0.07}s` }} />
+              ))}
+            </div>
+            {!over && !revealed && (
+              <button className="card-reveal-btn" onClick={handleReveal}>reveal answer</button>
+            )}
+          </div>
+          <div className="mystery-back">
+            <div className="label">ANSWER</div>
+            <div className="back-name">{answer.name}</div>
+            <div className="back-boro">{answer.borough}</div>
+          </div>
         </div>
       </div>
 
@@ -155,7 +175,7 @@ export default function App() {
           stations={stations}
           guesses={guesses}
           onGuess={handleGuess}
-          disabled={over}
+          disabled={over || revealed}
         />
         <div className="hint">
           {over
@@ -164,9 +184,6 @@ export default function App() {
                 : `The answer was ${answer.name}`)
             : '6 guesses. After each: shared lines, borough, distance & direction.'}
         </div>
-        {!over && (
-          <button className="reveal-btn" onClick={handleReveal}>Reveal answer</button>
-        )}
       </div>
 
       {over && (
