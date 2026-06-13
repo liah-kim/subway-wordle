@@ -351,6 +351,22 @@ header {
   margin-top: 8px;
 }
 
+.reveal-btn {
+  display: block;
+  margin: 8px auto 0;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  padding: 0;
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+.reveal-btn:hover { opacity: 1; }
+
 /* ── Result panel ── */
 .result {
   background: var(--panel);

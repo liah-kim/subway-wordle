@@ -77,6 +77,18 @@ export default function App() {
     setLastGuessCount(null);
   }
 
+  function handleReveal() {
+    if (over) return;
+    setOver(true);
+    setWon(false);
+    setLastGuessCount(guesses.length);
+    if (mode === 'daily') {
+      const newStats = updateAndSaveStats(false, guesses.length, dailyNum);
+      setStats(newStats);
+      saveGameState(dailyNum, guesses.map(g => g.station.id), 'lost');
+    }
+  }
+
   function handleGuess(station) {
     if (over || !answer) return;
     if (guesses.some(g => g.station.id === station.id)) return;
@@ -152,6 +164,9 @@ export default function App() {
                 : `The answer was ${answer.name}`)
             : '6 guesses. After each: shared lines, borough, distance & direction.'}
         </div>
+        {!over && (
+          <button className="reveal-btn" onClick={handleReveal}>Reveal answer</button>
+        )}
       </div>
 
       {over && (
