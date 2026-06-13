@@ -119,6 +119,7 @@ export default function App() {
     <div id="app">
       <header>
         <div className="header-row">
+          <button className="icon-btn" onClick={startPractice} aria-label="Random puzzle">🔀</button>
           <h1>Subway Wordle</h1>
           <button className="icon-btn" onClick={() => setInfoTab('howto')} aria-label="Menu">⚙️</button>
         </div>

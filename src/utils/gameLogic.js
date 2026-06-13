@@ -63,7 +63,8 @@ export function pickDaily(stations) {
 }
 
 export function pickRandom(stations) {
-  return stations[Math.floor(Math.random() * stations.length)];
+  const pool = dailyPool(stations);
+  return pool[Math.floor(Math.random() * pool.length)];
 }
 
 export function computeGuess(guessed, answer) {

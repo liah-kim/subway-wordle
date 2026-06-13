@@ -103,12 +103,6 @@ header {
   text-align: center;
 }
 
-/* Balances the gear icon so h1 stays truly centered */
-.header-row::before {
-  content: '';
-  width: 28px;
-  flex-shrink: 0;
-}
 
 .icon-btn {
   width: 28px;
