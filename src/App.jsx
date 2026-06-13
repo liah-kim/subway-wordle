@@ -160,10 +160,11 @@ export default function App() {
               <button className="card-reveal-btn" onClick={handleReveal}>reveal answer</button>
             )}
           </div>
-          <div className="mystery-back">
+          <div className="mystery-back" onClick={() => setRevealed(false)} title="Flip back">
             <div className="label">ANSWER</div>
             <div className="back-name">{answer.name}</div>
             <div className="back-boro">{answer.borough}</div>
+            <div className="back-flip-hint">tap to flip back</div>
           </div>
         </div>
       </div>

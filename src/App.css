@@ -183,6 +183,7 @@ header {
   align-items: center;
   justify-content: center;
   gap: 4px;
+  cursor: pointer;
 }
 
 .mystery-back .label {
@@ -201,6 +202,14 @@ header {
 .back-boro {
   font-size: 13px;
   color: var(--muted);
+}
+
+.back-flip-hint {
+  font-size: 10px;
+  color: var(--muted);
+  opacity: 0.4;
+  margin-top: 8px;
+  letter-spacing: 0.5px;
 }
 
 .card-reveal-btn {
