@@ -62,8 +62,14 @@ export function pickDaily(stations) {
   return { station: pool[Math.floor(rng() * pool.length)], num };
 }
 
-export function pickRandom(stations) {
-  const pool = dailyPool(stations);
+export function practicePool(stations, difficulty) {
+  if (difficulty === 'easy') return stations.filter(s => s.routes.length >= 4);
+  if (difficulty === 'hard') return stations; // all stations, including single-route
+  return dailyPool(stations); // medium: 2+ routes
+}
+
+export function pickRandom(stations, difficulty = 'medium') {
+  const pool = practicePool(stations, difficulty);
   return pool[Math.floor(Math.random() * pool.length)];
 }
 

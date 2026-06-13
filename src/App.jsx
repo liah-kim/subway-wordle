@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { pickDaily, pickRandom, computeGuess, sortRoutes } from './utils/gameLogic';
+import { pickDaily, pickRandom, computeGuess, sortRoutes, practicePool } from './utils/gameLogic';
 import { loadGameState, saveGameState, loadStats, updateAndSaveStats, loadTheme, saveTheme } from './utils/storage';
 import Board from './components/Board';
 import GuessInput from './components/GuessInput';
@@ -23,6 +23,7 @@ export default function App() {
   const [lastGuessCount, setLastGuessCount] = useState(null);
   const [theme, setTheme] = useState(() => loadTheme());
   const [revealed, setRevealed] = useState(false);
+  const [difficulty, setDifficulty] = useState('medium');
 
   useEffect(() => {
     const t = loadTheme();
@@ -69,14 +70,19 @@ export default function App() {
     setStats(loadStats());
   }, [stations]);
 
-  function startPractice() {
-    setAnswer(pickRandom(stations));
+  function startPractice(diff = difficulty) {
+    setAnswer(pickRandom(stations, diff));
     setGuesses([]);
     setOver(false);
     setWon(false);
     setMode('practice');
     setLastGuessCount(null);
     setRevealed(false);
+  }
+
+  function handleDifficultyChange(diff) {
+    setDifficulty(diff);
+    startPractice(diff);
   }
 
   function handleReveal() {
@@ -145,6 +151,19 @@ export default function App() {
         </div>
         <div className="sub">Guess the NYC subway station from its stops</div>
         <div className="modeTag">{mode === 'daily' ? `DAILY #${dailyNum}` : 'PRACTICE'}</div>
+        {mode === 'practice' && (
+          <div className="difficulty-row">
+            {['easy', 'medium', 'hard'].map(d => (
+              <button
+                key={d}
+                className={`diff-btn${difficulty === d ? ' active' : ''}`}
+                onClick={() => handleDifficultyChange(d)}
+              >
+                {d}
+              </button>
+            ))}
+          </div>
+        )}
       </header>
 
       <div className="mystery-flipper">
