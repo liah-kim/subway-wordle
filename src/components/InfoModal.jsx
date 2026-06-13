@@ -123,13 +123,17 @@ function SettingsContent({ mode, difficulty, theme, onModeChange, onDifficultyCh
       </div>
 
       <div className="setting-section">
-        <div className="setting-label">PRACTICE DIFFICULTY</div>
+        <div className="setting-label">
+          PRACTICE DIFFICULTY
+          {mode === 'daily' && <span className="setting-label-note"> · switch to Practice first</span>}
+        </div>
         <div className="setting-btns">
           {[['easy', 'Easy'], ['medium', 'Medium'], ['hard', 'Hard']].map(([val, label]) => (
             <button
               key={val}
               className={`seg-btn${difficulty === val ? ' active' : ''}`}
               onClick={() => onDifficultyChange(val)}
+              disabled={mode === 'daily'}
             >
               {label}
             </button>

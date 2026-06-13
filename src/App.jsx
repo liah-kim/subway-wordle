@@ -5,6 +5,7 @@ import Board from './components/Board';
 import GuessInput from './components/GuessInput';
 import ResultPanel from './components/ResultPanel';
 import InfoModal from './components/InfoModal';
+import WelcomeModal from './components/WelcomeModal';
 import RouteBullet from './components/RouteBullet';
 import './App.css';
 
@@ -24,6 +25,7 @@ export default function App() {
   const [theme, setTheme] = useState(() => loadTheme());
   const [revealed, setRevealed] = useState(false);
   const [difficulty, setDifficulty] = useState('medium');
+  const [showWelcome, setShowWelcome] = useState(() => !localStorage.getItem('nextstop-welcomed'));
 
   useEffect(() => {
     const t = loadTheme();
@@ -77,7 +79,12 @@ export default function App() {
   }, [stations]);
 
   function startPractice(diff = difficulty) {
-    setAnswer(pickRandom(stations, diff));
+    const pool = practicePool(stations, diff);
+    const candidates = answer && pool.length > 1
+      ? pool.filter(s => s.id !== answer.id)
+      : pool;
+    const next = candidates[Math.floor(Math.random() * candidates.length)];
+    setAnswer(next);
     setGuesses([]);
     setOver(false);
     setWon(false);
@@ -156,9 +163,12 @@ export default function App() {
     <div id="app">
       <header>
         <div className="header-row">
-          <button className="icon-btn" onClick={startPractice} aria-label="Random puzzle">🔀</button>
+          {mode === 'practice'
+            ? <button className="icon-btn" onClick={startPractice} aria-label="Random puzzle">🔀</button>
+            : <span className="header-spacer" />
+          }
           <h1>Subway Wordle</h1>
-          <button className="icon-btn" onClick={() => setInfoTab('howto')} aria-label="Menu">⚙️</button>
+          <button className="icon-btn" onClick={() => setInfoTab('settings')} aria-label="Settings">⚙️</button>
         </div>
         <div className="sub">Guess the NYC subway station from its stops</div>
         <div className="modeTag">{mode === 'daily' ? `DAILY #${dailyNum}` : `PRACTICE · ${difficulty}`}</div>
@@ -166,16 +176,29 @@ export default function App() {
 
       <div className="mystery-flipper">
         <div className={`mystery-card${revealed ? ' flipped' : ''}`}>
-          <div className="mystery-front">
+          <div
+            className="mystery-front"
+            onClick={over && !won && !revealed ? () => setRevealed(true) : undefined}
+            style={over && !won && !revealed ? { cursor: 'pointer' } : undefined}
+          >
             <div className="label">MYSTERY STATION</div>
             <div className="bullets">
               {sortRoutes(answer.routes).map((r, i) => (
                 <RouteBullet key={r} route={r} style={{ animationDelay: `${i * 0.07}s` }} />
               ))}
             </div>
-            {!over && !revealed && (
-              <button className="card-reveal-btn" onClick={handleReveal}>reveal answer</button>
-            )}
+            <button
+              className="card-reveal-btn"
+              onClick={!over && !revealed ? handleReveal : undefined}
+              style={{
+                visibility: revealed || (over && won) ? 'hidden' : 'visible',
+                pointerEvents: !over && !revealed ? 'auto' : 'none',
+                cursor: !over && !revealed ? 'pointer' : 'default',
+                textDecoration: !over && !revealed ? 'underline' : 'none',
+              }}
+            >
+              {over && !won ? 'tap to see answer' : 'reveal answer'}
+            </button>
           </div>
           <div className="mystery-back" onClick={() => setRevealed(false)} title="Flip back">
             <div className="label">ANSWER</div>
@@ -231,6 +254,13 @@ export default function App() {
       )}
 
       <div className="legend">Unofficial fan-made · Station data: MTA open data</div>
+
+      {showWelcome && (
+        <WelcomeModal onClose={() => {
+          localStorage.setItem('nextstop-welcomed', '1');
+          setShowWelcome(false);
+        }} />
+      )}
     </div>
   );
 }
