@@ -69,14 +69,13 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: Helvetica, Arial, sans-serif;
-  display: flex;
-  justify-content: center;
   min-height: 100vh;
 }
 
 #app {
   width: 100%;
   max-width: 480px;
+  margin: 0 auto;
   padding: 16px 14px 60px;
 }
 
